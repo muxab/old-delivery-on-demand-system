@@ -1,0 +1,55 @@
+{
+    constructor(
+      @InjectRepository(User) private userRepo: Repository<User>,
+      private jwtService: JwtService,
+    ) {}
+    async changePass(password: string, newPassword: string, user: any) {
+      const client = await this.userRepo.findOne({ id: user.id });
+      const success = await this.verifyPassword(password, user.password);
+      user.password = undefined;
+      // return password;
+      const payload = {
+        id: user.id,
+        name: user.name,
+        role: user.role,
+      };
+  
+      if (success) {
+        client.password = await bcrypt.hash(newPassword, 3);
+        client.save();
+        return {
+          token: this.jwtService.sign(payload, { secret: 'nestJsTutorial' }),
+        };
+      }
+    }
+  
+    //Change Email
+    async changeEmail(password: string, newEmail: string, user: any) {
+      const client = await this.userRepo.findOne({ id: user.id });
+      const success = await this.verifyPassword(password, user.password);
+  
+      if (success) {
+          client.password = newEmail;
+          client.save();
+        }
+    }
+  
+  
+    //validate Password
+    private async verifyPassword(
+      plainTextPassword: string,
+      hashedPassword: string,
+    ) {
+      const isPasswordMatching = await bcrypt.compare(
+        plainTextPassword,
+        hashedPassword,
+      );
+      if (!isPasswordMatching) {
+        throw new HttpException(
+          { msg: 'Wrong credentials provided' },
+          HttpStatus.BAD_REQUEST,
+        );
+        return isPasswordMatching;
+      }
+    }
+  }

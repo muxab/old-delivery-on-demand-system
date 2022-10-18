@@ -1,0 +1,4 @@
+create new journey contains details of detination and prices  and veichle 
+    make the journey belong to shipment 
+        create shipment by it self 
+            insert data as relations

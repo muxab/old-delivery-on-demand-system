@@ -1,0 +1,1 @@
+UnhandledPromiseRejectionWarning: Error: An invalid controller has been detected. Perhaps, one of your controllers is missing @Controller() decorator.
